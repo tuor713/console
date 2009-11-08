@@ -1,0 +1,43 @@
+<html title="Bundles"
+	t:type="layout"
+	xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd"
+	xmlns:p="tapestry:parameter">
+	
+	<h2>Bundles</h2>
+	
+	<p>
+		<table>
+			<tr>
+				<th>Id</th>
+				<th>State</th>
+				<th>Symbolic Name</th>
+				<th>Version</th>
+				<th>Action</th>
+			</tr>
+			<t:loop t:source="bundles" t:value="bundle">
+				<tr>
+					<td>
+						<t:pagelink page="info" context="bundle.bundleId">${bundle.bundleId}</t:pagelink>
+					</td>
+					<td>${state(bundle)}</td>
+					<td>${bundle.symbolicName}</td>
+					<td>${bundle.version}</td>
+					<td>
+						[<t:actionlink t:id="start" context="bundle.bundleId">start</t:actionlink>]
+						[<t:actionlink t:id="stop" context="bundle.bundleId">stop</t:actionlink>]
+					</td>
+				</tr>
+			</t:loop>
+		</table>
+	</p>
+	
+	<t:if test="lastError">
+		<h3>Error</h3>
+		<p>
+			<t:loop t:source="lastError" t:value="stackElement">
+				${stackElement} <br/>
+			</t:loop>
+		</p>
+	</t:if>
+	
+</html>

@@ -1,0 +1,35 @@
+<html 
+	title="Services"
+	t:type="layout"
+	xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd"
+	xmlns:p="tapestry:parameter">
+	
+	<h3>Services</h3>
+
+	<t:form>
+		<t:label for="filterString" />: 
+		<t:textfield t:id="filterString" size="50" style="margin-right:1em;" />
+		
+		<input type="submit" value="Filter" />
+	</t:form>
+
+	<div style="margin-top:2em;">
+		<table>
+			<tr><th>Id</th><th>Classes</th><th>Defining bundle</th></tr>
+			<t:loop t:source="services" t:value="service">
+				<tr>
+					<td>${serviceId(service)}</td>
+					<td>
+						<t:loop t:source="serviceClasses(service)" t:value="serviceClass">
+							${serviceClass} <br/>
+						</t:loop>
+					</td>
+					<td>
+						<t:bundlelink bundle="service.bundle" />
+					</td>
+				</tr>
+			</t:loop>
+		</table>
+	</div>
+	
+</html>

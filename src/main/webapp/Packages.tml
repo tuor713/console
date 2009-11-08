@@ -1,0 +1,32 @@
+<html 
+	title="Packages"
+	t:type="layout"
+	xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd"
+	xmlns:p="tapestry:parameter">
+
+	<h3>Packages</h3>
+
+	<t:form>
+		<t:label for="filterString" />: 
+		<t:textfield t:id="filterString" size="50" style="margin-right:1em;" />
+		
+		<input type="submit" value="Filter" />
+	</t:form>
+
+	<div style="margin-top:2em;">
+		<table>
+			<tr><th>Package</th><th>Version</th><th>Bundle</th></tr>
+		
+			<t:loop t:source="packages" t:value="pack">
+				<tr>
+					<td>${pack.name}</td>
+					<td>${pack.version}</td>
+					<td>
+						<t:bundlelink bundle="pack.exportingBundle" />
+					</td>
+				</tr>
+			</t:loop>
+		</table>
+	</div>
+	
+</html>

@@ -1,0 +1,53 @@
+group = 'org.uwh.console'
+version = '0.1'
+
+usePlugin 'groovy'
+usePlugin 'war'
+usePlugin 'jetty'
+usePlugin 'osgi'
+
+repositories {
+	mavenRepo(urls: 'http://repo1.maven.org/maven2/')
+  mavenRepo(urls: 'http://repository.jboss.org/maven2/')
+}
+
+dependencies {
+	providedCompile 'org.eclipse.equinox:org.eclipse.osgi:3.5'
+	
+	groovy 'org.codehaus.groovy:groovy:1.6.0'
+	
+	compile	'org.apache.tapestry:tapestry-core:5.1.0.5'
+	compile 'org.apache.tapestry:tapestry-ioc:5.1.0.5'
+	compile 'org.apache.tapestry:tapestry5-annotations:5.1.0.5'
+	providedCompile 'org.mortbay.jetty:jetty:6.1.15'
+	providedCompile 'org.mortbay.jetty:jetty-util:6.1.15'
+}
+
+httpPort = 9080
+stopPort = 9000
+stopKey = 'stop'
+
+configure(war.osgi) {
+  version = '0.1.0'
+  name = 'OSGi console bundle'
+	instruction 'Bundle-Activator', 'org.uwh.console.internal.Activator'
+	instruction 'Import-Package', ( 'org.osgi.framework, javax.servlet, javax.servlet.http, org.mortbay.jetty, org.mortbay.jetty.webapp'
+		+ ',javax.xml.transform,javax.xml.transform.stream,org.w3c.dom, org.osgi.util.tracker, org.osgi.service.packageadmin' )
+	instruction 'Bundle-ClassPath', '.,WEB-INF/classes'
+}
+
+task "generateBundleClasspath" << {
+	def classpath = sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME).getRuntimeClasspath().getFiles();
+  def provided = project.getConfigurations().getByName(WarPlugin.PROVIDED_RUNTIME_CONFIGURATION_NAME)
+          .getFiles();
+
+  classpath.removeAll(provided)
+
+	war.osgi.instruction('Bundle-ClassPath', (['.','WEB-INF/classes'] + classpath.findAll {
+			it.isFile()
+		}.collect {
+			'WEB-INF/lib/' + it.name
+		}).join(','))
+}
+
+war.dependsOn generateBundleClasspath

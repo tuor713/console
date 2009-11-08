@@ -1,0 +1,112 @@
+<html 
+	title="Bundle ${bundle.symbolicName} - ${bundle.version}"
+	t:type="layout"
+	xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd"
+	xmlns:p="tapestry:parameter">
+	
+	<h2>${bundle.symbolicName} - ${bundle.version}</h2>
+	
+	<h4>State</h4>
+	<p>${state}</p>
+	
+	<t:if test="bundle.servicesInUse">
+		<h4 onclick="Effect.toggle('services','appear', {duration : 0.5}); return false;">Services</h4>
+		<div id="services">
+			<h5>Services in use</h5>
+			<p>
+				<table>
+					<tr>
+						<th>Service id</th>
+						<th>Classes</th>
+						<th>Defining bundle</th>
+					</tr>
+					<t:loop t:source="bundle.servicesInUse" t:value="usedService">
+						<tr>
+							<td>${serviceId(usedService)}</td>
+							<td>
+								<t:loop t:source="serviceClasses(usedService)" t:value="serviceClass">
+									${serviceClass}<br/>
+								</t:loop>
+							</td>
+							<td>
+								<t:bundlelink bundle="usedService.bundle" />
+							</td>
+						</tr>
+					</t:loop>
+				</table>
+			</p>
+
+			<h5>Services exported</h5>
+			<p>
+				<table>
+					<tr>
+						<th>Service id</th>
+						<th>Classes</th>
+						<th>Using bundles</th>
+					</tr>
+					<t:loop t:source="bundle.registeredServices" t:value="registeredService">
+						<tr>
+							<td>${serviceId(registeredService)}</td>
+							<td>
+								<t:loop t:source="serviceClasses(registeredService)" t:value="serviceClass">
+									${serviceClass}<br/>
+								</t:loop>
+							</td>
+							<td>
+								<t:loop t:source="registeredService.usingBundles" t:value="clientBundle">
+									<t:bundlelink bundle="clientBundle" />
+									<br/>
+								</t:loop>
+							</td>
+						</tr>
+					</t:loop>
+				</table>
+			</p>
+		</div>
+	</t:if>
+	
+	<h4 onclick="Effect.toggle('packages','appear', {duration : 0.5}); return false;">Packages</h4>
+	<div id="packages">
+		<h5>Imports</h5>
+		<table>
+			<tr><th>Package</th><th>Version</th><th>Bundle</th></tr>
+			<t:loop t:source="imports" t:value="exportedPackage">
+				<tr>
+					<td>${exportedPackage.name}</td>
+					<td>${exportedPackage.version}</td>
+					<td>
+						<t:bundlelink bundle="exportedPackage.exportingBundle" />
+					</td>
+				</tr>
+			</t:loop>
+		</table>
+		
+		<h5>Exports</h5>
+		<table>
+			<tr><th>Package</th><th>Version</th><th>Using bundles</th></tr>
+			<t:loop t:source="exports" t:value="exportedPackage">
+				<tr>
+					<td>${exportedPackage.name}</td>
+					<td>${exportedPackage.version}</td>
+					<td>
+						<t:loop t:source="exportedPackage.importingBundles" t:value="clientBundle">
+							<t:bundlelink bundle="clientBundle" />
+							<br/>
+						</t:loop>
+					</td>
+				</tr>
+			</t:loop>
+		</table>
+	</div>
+	
+	<h4 onclick="Effect.toggle('headers','appear', {duration : 0.5}); return false;">Headers</h4>
+	<div id="headers">
+		<dl>
+			<t:loop t:source="headers.entrySet()" t:value="entry">
+				<dt>${entry.key}</dt>
+				<dd>${entry.value}</dd>
+			</t:loop>
+		</dl>
+	</div>
+		
+</html>
